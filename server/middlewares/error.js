@@ -5,6 +5,7 @@ const noEncontradoHandler = (req, res) => {
   res.status(404).json({ error: "Endpoint no encontrado!" });
 };
 
+// eslint-disable-next-line no-unused-vars
 const finalErrorHandler = (error, req, res, next) => {
   if (error instanceof ValidationError) {
     error.code = 400;
