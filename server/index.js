@@ -2,7 +2,6 @@ const express = require("express");
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
-const express = require("express");
 const { validate } = require("express-validation");
 const errorHandler = require("./error");
 const auth = require("./middlewares/auth");
