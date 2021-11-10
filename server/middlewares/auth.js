@@ -1,3 +1,4 @@
+require("dotenv").config();
 const debug = require("debug")("series:auth");
 const chalk = require("chalk");
 const jwt = require("jsonwebtoken");
@@ -23,7 +24,7 @@ const Auth = (req, res, next) => {
     } else {
       debug(chalk.yellow("Token recogido"));
       try {
-        const user = jwt.verify(token, process.env.ROBOTS_HASH);
+        const user = jwt.verify(token, process.env.SERIES_HASH);
         debug(chalk.blue(`Codificando en Token: ${JSON.stringify(user)}`));
         debug(chalk.blue(`Codificando en Auth: ${user.id}`));
         debug(chalk.blue(`Codificando en Auth: ${user.isAdmin}`));
