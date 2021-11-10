@@ -32,4 +32,19 @@ describe("Given a Serie function", () => {
       expect(res.json).toHaveBeenCalledWith(series);
     });
   });
+
+  describe("When it receives a getSeries function", () => {
+    test("Then it should summon the Serie.find", async () => {
+      Serie.find = jest.fn().mockResolvedValue({});
+
+      const res = {
+        json: () => {},
+      };
+      const next = () => {};
+
+      await getSeries(null, res, next);
+
+      expect(Serie.find).toHaveBeenCalled();
+    });
+  });
 });
