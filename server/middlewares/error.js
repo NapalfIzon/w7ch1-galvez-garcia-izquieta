@@ -1,22 +1,18 @@
-const debug = require("debug")("series:errors");
+const debug = require("debug")("robots:error");
 const { ValidationError } = require("express-validation");
 
-const notFoundErrorHandler = (req, res) => {
-  res.status(404).json({ error: "Endpoint not found" });
+const noEncontradoHandler = (req, res) => {
+  res.status(404).json({ error: "Endpoint no encontrado!" });
 };
 
-// eslint-disable-next-line no-unused-vars
-const generalErrorHandler = (error, req, res, next) => {
+const finalErrorHandler = (error, req, res, next) => {
   if (error instanceof ValidationError) {
     error.code = 400;
-    error.message = "Validation error";
+    error.message = "Credenciales erroneas!";
   }
-  debug("A wild error appears: ", error.message);
-  const message = error.code ? error.message : "Fatal error";
+  debug("Ha ocurrido un error: ", error.message);
+  const message = error.code ? error.message : "Error General";
   res.status(error.code || 500).json({ error: message });
 };
 
-module.exports = {
-  notFoundErrorHandler,
-  generalErrorHandler,
-};
+module.exports = { noEncontradoHandler, finalErrorHandler };

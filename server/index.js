@@ -2,15 +2,12 @@ const express = require("express");
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
-const { validate } = require("express-validation");
-const errorHandler = require("./error");
-const auth = require("./middlewares/auth");
 const usersRoutes = require("./routes/usersRoutes");
-const platformsRoutes = require("./routes/platformsRoutes");
-const seriesRoutes = require("./routes/seriesRoutes");
-const userValidation = require("./schemas/userSchema");
-const serieValidation = require("./schemas/serieSchema");
-const platformValidation = require("./schemas/platformSchema");
+
+const {
+  noEncontradoHandler,
+  finalErrorHandler,
+} = require("./middlewares/error");
 
 const app = express();
 
@@ -50,16 +47,17 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-app.use("/users", validate(userValidation, {}, {}), auth, usersRoutes);
+app.use("/users", usersRoutes);
 
-app.use(
+/* app.use(
   "/platforms",
   validate(platformValidation, {}, {}),
   auth,
   platformsRoutes
 );
-app.use("/series", validate(serieValidation, {}, {}), auth, seriesRoutes);
+app.use("/series", validate(serieValidation, {}, {}), auth, seriesRoutes); */
 
-app.use(errorHandler);
+app.use(noEncontradoHandler);
+app.use(finalErrorHandler);
 
 module.exports = { initializeServer, app };
