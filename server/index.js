@@ -1,3 +1,4 @@
+const express = require("express");
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
@@ -45,12 +46,12 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-app.use("/users", auth, usersRoutes);
+/* app.use("/users", usersRoutes);
 
-app.use("/platforms", auth, platformsRoutes);
+app.use("/platforms", platformsRoutes);
 
 app.use("/series", auth, seriesRoutes);
 
-app.use(errorHandler);
+app.use(errorHandler); */
 
-module.exports = initializeServer;
+module.exports = { initializeServer, app };
