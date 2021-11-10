@@ -18,11 +18,6 @@ const serieSchema = new Schema({
     ref: "Platform",
     required: true,
   },
-  users: {
-    type: Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
 });
 
 const Serie = model("serie", serieSchema);
