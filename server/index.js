@@ -1,3 +1,4 @@
+const express = require("express");
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
@@ -58,9 +59,8 @@ app.use(
   auth,
   platformsRoutes
 );
-
 app.use("/series", validate(serieValidation, {}, {}), auth, seriesRoutes);
 
 app.use(errorHandler);
 
-module.exports = initializeServer;
+module.exports = { initializeServer, app };
