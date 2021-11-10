@@ -28,7 +28,18 @@ const getViewedSeries = async (req, res, next) => {
   }
 };
 
-const getPendingSeries = async () => {};
+const getPendingSeries = async (req, res, next) => {
+  try {
+    const series = req.body;
+    await Serie.find({ view: false });
+    debug(chalk.blue("Haciendo un get a /series  no vistas"));
+    res.json(series);
+  } catch (error) {
+    error.code = 400;
+    error.message = "Datos erroneos!";
+    next(error);
+  }
+};
 
 const addSerie = async (req, res, next) => {
   try {
