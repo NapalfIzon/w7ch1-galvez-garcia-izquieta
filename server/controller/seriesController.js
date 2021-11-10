@@ -38,6 +38,7 @@ const updateSerie = async (req, res, next) => {
     const updatedSerie = await Serie.findByIdAndUpdate(serie.id, serie, {
       new: true,
     });
+    debug(chalk.blue("Haciendo un put a /series"));
     if (updatedSerie) {
       res.json(updatedSerie);
     } else {
@@ -56,6 +57,7 @@ const deletedSerie = async (req, res, next) => {
   const { idSerie } = req.params;
   try {
     const deleteSerie = await Serie.findByIdAndDelete(idSerie);
+    debug(chalk.blue("Haciendo un delete a /series"));
     if (deleteSerie) {
       res.json({ id: deleteSerie.id });
     } else {
@@ -70,7 +72,26 @@ const deletedSerie = async (req, res, next) => {
   }
 };
 
-const markViewedSerie = async () => {};
+const markViewedSerie = async (req, res, next) => {
+  const serie = req.params;
+  try {
+    const markedSerie = await Serie.findByIdAndUpdate(serie.id, serie, {
+      view: true,
+    });
+    debug(chalk.blue("Marcando como vista a /series"));
+    if (markedSerie) {
+      res.json(markedSerie);
+    } else {
+      const error = new Error("Serie no encontrada");
+      error.code = 404;
+      next(error);
+    }
+  } catch {
+    const error = new Error("Formato erroneo");
+    error.code = 400;
+    next(error);
+  }
+};
 
 module.exports = {
   getSeries,
