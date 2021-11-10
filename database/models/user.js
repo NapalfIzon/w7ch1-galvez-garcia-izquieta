@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 const userSchema = new Schema({
   userName: {
@@ -9,8 +9,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  series: {
+    type: [Types.ObjectId],
+    ref: "Serie",
+    required: true,
+  },
 });
 
-const User = model("User", userSchema, "Users");
+const User = model("user", userSchema, "users");
 
 module.exports = User;
