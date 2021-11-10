@@ -1,11 +1,13 @@
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
+const { validate } = require("express-validation");
 const errorHandler = require("./error");
 const auth = require("./middlewares/auth");
 const usersRoutes = require("./routes/usersRoutes");
 const platformsRoutes = require("./routes/platformsRoutes");
 const seriesRoutes = require("./routes/seriesRoutes");
+const userValidation = require("./schemas/userSchema");
 
 const app = express();
 
@@ -45,7 +47,7 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-app.use("/users", auth, usersRoutes);
+app.use("/users", validate(userValidation, {}, {}), auth, usersRoutes);
 
 app.use("/platforms", auth, platformsRoutes);
 
@@ -54,3 +56,4 @@ app.use("/series", auth, seriesRoutes);
 app.use(errorHandler);
 
 module.exports = initializeServer;
+
