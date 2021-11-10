@@ -19,7 +19,18 @@ const getViewedSeries = async () => {};
 
 const getPendingSeries = async () => {};
 
-const addSerie = async () => {};
+const addSerie = async (req, res, next) => {
+  try {
+    const serie = req.body;
+    const newSerie = await Serie.create(serie);
+    debug(chalk.blue("Haciendo un post a /series"));
+    res.json(newSerie);
+  } catch (error) {
+    error.code = 400;
+    error.message = "Datos erroneos!";
+    next(error);
+  }
+};
 
 const updateSerie = async () => {};
 
