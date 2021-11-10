@@ -22,8 +22,4 @@ const serieSchema = new Schema({
 
 const Serie = model("serie", serieSchema);
 
-serieSchema.set("toJSON", {
-  virtuals: false,
-});
-
 module.exports = Serie;

@@ -2,6 +2,7 @@ require("dotenv").config();
 const chalk = require("chalk");
 const debug = require("debug")("series:seriesController");
 const Serie = require("../../database/models/serie");
+const User = require("../../database/models/user");
 
 const getSeries = async (req, res, next) => {
   try {
@@ -43,9 +44,16 @@ const getPendingSeries = async (req, res, next) => {
 
 const addSerie = async (req, res, next) => {
   try {
+    debug(chalk.green("Haciendo un post a /series"));
     const serie = req.body;
+    debug(chalk.green(`La serie que llega es ${JSON.stringify(serie)}`));
+    debug(chalk.green(`Soy el usuario ${req.userid}`));
     const newSerie = await Serie.create(serie);
-    debug(chalk.blue("Haciendo un post a /series"));
+    debug(chalk.green(`La serie que crea es ${JSON.stringify(newSerie)}`));
+    const user = await User.findOne({ _id: req.userid });
+    debug(chalk.green(`El usuario es ${JSON.stringify(user)}`));
+    user.series = [...user.series, newSerie.id];
+    await user.save();
     res.json(newSerie);
   } catch (error) {
     error.code = 400;
