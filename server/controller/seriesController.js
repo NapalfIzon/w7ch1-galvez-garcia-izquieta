@@ -34,7 +34,23 @@ const addSerie = async (req, res, next) => {
 
 const updateSerie = async () => {};
 
-const deletedSerie = async () => {};
+const deletedSerie = async (req, res, next) => {
+  const { idSerie } = req.params;
+  try {
+    const deleteSerie = await Serie.findByIdAndDelete(idSerie);
+    if (deleteSerie) {
+      res.json({ id: deleteSerie.id });
+    } else {
+      const error = new Error("Serie no encontrada");
+      error.code = 404;
+      next(error);
+    }
+  } catch (error) {
+    error.code = 400;
+    error.message = "Datos erroneos!";
+    next(error);
+  }
+};
 
 const markViewedSerie = async () => {};
 
