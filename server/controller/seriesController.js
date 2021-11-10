@@ -32,7 +32,25 @@ const addSerie = async (req, res, next) => {
   }
 };
 
-const updateSerie = async () => {};
+const updateSerie = async (req, res, next) => {
+  const serie = req.body;
+  try {
+    const updatedSerie = await Serie.findByIdAndUpdate(serie.id, serie, {
+      new: true,
+    });
+    if (updatedSerie) {
+      res.json(updatedSerie);
+    } else {
+      const error = new Error("Serie no encontrada");
+      error.code = 404;
+      next(error);
+    }
+  } catch {
+    const error = new Error("Formato erroneo");
+    error.code = 400;
+    next(error);
+  }
+};
 
 const deletedSerie = async (req, res, next) => {
   const { idSerie } = req.params;
