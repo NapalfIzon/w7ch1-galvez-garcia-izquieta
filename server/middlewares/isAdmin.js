@@ -10,6 +10,7 @@ const isAdmin = (req, res, next) => {
   } else {
     const error = new Error("No Admin user!");
     error.code = 403;
+    debug(chalk.red(`El error generado es ${error}`));
     next(error);
   }
 };
