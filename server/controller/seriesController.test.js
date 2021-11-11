@@ -218,7 +218,7 @@ describe("Given a Serie Controller", () => {
   });
 
   describe("When it receives a wrong id and markviewedSerie function", () => {
-    test("Then it should receives a errorwith a 404 code", async () => {
+    test("Then it should receives a error with a 404 code", async () => {
       Serie.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
       const idSerie = 12;
       const req = {
@@ -261,6 +261,32 @@ describe("Given a Serie Controller", () => {
       expect(next).toHaveBeenCalled();
       expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
       expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
+
+  describe("When arrives an id and markViewedSerie function", () => {
+    test("Then it should return the serie marked as viewed", async () => {
+      const idSerie = 10;
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      const serie = {
+        id: "asdf",
+        view: true,
+      };
+      const next = jest.fn();
+      Serie.findByIdAndUpdate = jest
+        .fn()
+        .mockResolvedValue(serie.id, serie, { view: true });
+
+      await markViewedSerie(req, res, next);
+
+      expect(res.json).toHaveBeenCalledWith(serie.id);
     });
   });
 });
