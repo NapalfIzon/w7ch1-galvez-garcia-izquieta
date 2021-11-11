@@ -186,4 +186,24 @@ describe("Given a Serie Controller", () => {
       expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
+
+  describe("When arrives an id and updateSerie function", () => {
+    test("Then it should return the serie updated", async () => {
+      const idSerie = 10;
+      const req = {
+        body: {
+          idSerie,
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+
+      Serie.findByIdAndUpdate = jest.fn().mockResolvedValue(idSerie);
+
+      await updateSerie(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(idSerie);
+    });
+  });
 });
