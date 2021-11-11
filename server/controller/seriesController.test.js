@@ -70,4 +70,27 @@ describe("Given a Serie function", () => {
       expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
+
+  describe("When it receives an Id with wrong format", () => {
+    test("Then it should return an error with a 400 code", async () => {
+      const idSerie = "SDFVGBRFDVX";
+      const error = {
+        code: 400,
+        message: "Datos erroneos!",
+      };
+      Serie.findByIdAndDelete = jest.fn().mockRejectedValue(error);
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const next = jest.fn();
+
+      await deletedSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
 });
