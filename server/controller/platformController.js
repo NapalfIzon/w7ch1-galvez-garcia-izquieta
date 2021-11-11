@@ -34,10 +34,12 @@ const addPlatform = async (req, res, next) => {
 };
 
 const updatePlatform = async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
   const temporalPlatform = req.body;
   try {
     const updatedPlatform = await Platform.findByIdAndUpdate(
-      temporalPlatform.id,
+      id,
       temporalPlatform,
       { new: true }
     );
@@ -65,9 +67,10 @@ const updatePlatform = async (req, res, next) => {
 };
 
 const removePlatform = async (req, res, next) => {
-  const { idPlatform } = req.params;
+  const { id } = req.params;
+
   try {
-    const deletedPlatform = await Platform.findByIdAndDelete(idPlatform);
+    const deletedPlatform = await Platform.findByIdAndDelete(id);
     if (deletedPlatform) {
       res.json(deletedPlatform);
       debug(

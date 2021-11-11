@@ -5,6 +5,7 @@ const morgan = require("morgan");
 
 const usersRoutes = require("./routes/usersRoutes");
 const seriesRoutes = require("./routes/seriesRoutes");
+const platformsRoutes = require("./routes/platformsRoutes");
 
 const {
   noEncontradoHandler,
@@ -55,7 +56,7 @@ app.use("/users", usersRoutes);
 
 app.use("/series", Auth, isAdmin, seriesRoutes);
 
-/* app.use("/platforms", Auth, isAdmin, platformsRoutes); */
+app.use("/platforms", Auth, platformsRoutes);
 
 app.use(noEncontradoHandler);
 app.use(finalErrorHandler);
