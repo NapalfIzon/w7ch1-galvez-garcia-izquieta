@@ -5,6 +5,7 @@ const {
   deletedSerie,
   addSerie,
   updateSerie,
+  markViewedSerie,
 } = require("./seriesController");
 
 jest.mock("../../database/models/serie");
@@ -213,6 +214,29 @@ describe("Given a Serie Controller", () => {
       await updateSerie(req, res);
 
       expect(res.json).toHaveBeenCalledWith(idSerie);
+    });
+  });
+
+  describe("When it receives a wrong id and markviewedSerie function", () => {
+    test("Then it should receives a errorwith a 404 code", async () => {
+      Serie.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+      const idSerie = 12;
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 404,
+        message: "Serie no encontrada",
+      };
+
+      await markViewedSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
 });
