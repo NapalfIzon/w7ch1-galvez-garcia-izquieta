@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const debug = require("debug")("series:seriesController");
 const Serie = require("../../database/models/serie");
 const User = require("../../database/models/user");
+const Platform = require("../../database/models/platform");
 
 const getSeries = async (req, res, next) => {
   try {
@@ -10,6 +11,10 @@ const getSeries = async (req, res, next) => {
     const user = await User.findOne({ _id: req.userid }).populate({
       path: "series",
       select: "name season view",
+      populate: {
+        path: "platform",
+        select: "name",
+      },
     });
     debug(chalk.green("Estamos poblando->"));
     debug(chalk.green(user));
