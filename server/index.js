@@ -2,13 +2,16 @@ const express = require("express");
 const chalk = require("chalk");
 const debug = require("debug")("series:indexServer");
 const morgan = require("morgan");
+
 const usersRoutes = require("./routes/usersRoutes");
 const seriesRoutes = require("./routes/seriesRoutes");
+
 const {
   noEncontradoHandler,
   finalErrorHandler,
 } = require("./middlewares/error");
 const Auth = require("./middlewares/auth");
+const isAdmin = require("./middlewares/isAdmin");
 
 const app = express();
 
@@ -50,15 +53,9 @@ app.use(express.json());
 
 app.use("/users", usersRoutes);
 
-app.use("/series", Auth, seriesRoutes);
+app.use("/series", Auth, isAdmin, seriesRoutes);
 
-/* app.use(
-  "/platforms",
-  validate(platformValidation, {}, {}),
-  auth,
-  platformsRoutes
-);
- */
+/* app.use("/platforms", Auth, isAdmin, platformsRoutes); */
 
 app.use(noEncontradoHandler);
 app.use(finalErrorHandler);
