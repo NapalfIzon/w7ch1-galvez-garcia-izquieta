@@ -1,9 +1,9 @@
 const Serie = require("../../database/models/serie");
-const { getSeries, deletedSerie } = require("./seriesController");
+const { getSeries, deletedSerie, addSerie } = require("./seriesController");
 
 jest.mock("../../database/models/serie");
 
-describe("Given a Serie function", () => {
+describe("Given a Serie Controller", () => {
   describe("When it receives an object res", () => {
     test("Then it should summon the method json", async () => {
       const series = [
@@ -110,6 +110,29 @@ describe("Given a Serie function", () => {
       await deletedSerie(req, res);
 
       expect(Serie.findByIdAndDelete).toHaveBeenCalledWith(idSerie);
+    });
+  });
+
+  describe("When it receives an Id and the function addSerie", () => {
+    test("Then it should create a new serie, and added to the series list", async () => {
+      const newSerie = {
+        name: "serie",
+        season: 2,
+        view: true,
+        platform: ["618c2ee6666bcb02723c198c"],
+      };
+      const req = {
+        body: newSerie,
+      };
+      const res = {
+        json: jest.fn(),
+      };
+
+      Serie.create = jest.fn().mockResolvedValue(newSerie);
+
+      await addSerie(req, res);
+      expect(Serie.create).toHaveBeenCalled();
+      expect(res.json).toHaveBeenCalledWith(newSerie);
     });
   });
 });
