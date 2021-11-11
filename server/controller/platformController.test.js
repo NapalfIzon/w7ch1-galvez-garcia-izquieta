@@ -157,4 +157,45 @@ describe("Given a removePlatform,", () => {
       expect(res.json).toHaveBeenCalledWith(deletedPlatform);
     });
   });
+
+  describe("When it receives a request with a non existent id, a response and a next function,", () => {
+    test("Then it should invoke a next function with an error with code 404.", async () => {
+      const id = 1;
+      const req = {
+        params: id,
+      };
+      const res = {};
+      const next = jest.fn();
+      const errorProperty = "code";
+      const errorCode = 404;
+      Platform.findByIdAndDelete = jest.fn().mockResolvedValue(false);
+
+      await removePlatform(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty(errorProperty);
+      expect(next.mock.calls[0][0].code).toBe(errorCode);
+    });
+  });
+
+  describe("When it receives a empty request, a response and a next function,", () => {
+    test("Then it should invoke a next function with an error with code 401", async () => {
+      const id = 1;
+      const req = {
+        params: id,
+      };
+      const res = {};
+      const next = jest.fn();
+      const error = {};
+      const errorProperty = "code";
+      const errorCode = 401;
+      Platform.findByIdAndDelete = jest.fn().mockRejectedValue(error);
+
+      await removePlatform(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty(errorProperty);
+      expect(next.mock.calls[0][0].code).toBe(errorCode);
+    });
+  });
 });
