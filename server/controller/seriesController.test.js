@@ -93,4 +93,23 @@ describe("Given a Serie function", () => {
       expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
+
+  describe("When it receives a correct id and the function deletedSerie", () => {
+    test("Then it should delete the serie of the list", async () => {
+      const idSerie = 12;
+      Serie.findByIdAndDelete = jest.fn().mockResolvedValue({});
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const res = {
+        json: () => {},
+      };
+
+      await deletedSerie(req, res);
+
+      expect(Serie.findByIdAndDelete).toHaveBeenCalledWith(idSerie);
+    });
+  });
 });
