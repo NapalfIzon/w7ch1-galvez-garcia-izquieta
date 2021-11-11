@@ -77,11 +77,13 @@ describe("Given a addPlatform function,", () => {
 describe("Given a updatePlatform", () => {
   describe("When it receives a request with a existent id and a update platform, a response and a next function,", () => {
     test("Then it should invoke a res.json with the updated platform.", async () => {
+      const id = 1;
       const updatedPlatform = {
-        id: 1,
+        id,
         name: "Disney plus",
       };
       const req = {
+        params: id,
         body: updatedPlatform,
       };
       const res = {
@@ -99,7 +101,9 @@ describe("Given a updatePlatform", () => {
 
   describe("When it receives a request with a non-existent id and a update platform, a response and a next function,", () => {
     test("Then it should invoke a next function with a 404 code.", async () => {
+      const id = 1;
       const req = {
+        params: id,
         body: {},
       };
       const res = {};
@@ -116,7 +120,9 @@ describe("Given a updatePlatform", () => {
 
   describe("When it receives a request with a null request, a response and a next function,", () => {
     test("Then it should invoke the next function with an error and a 404 error code.", async () => {
+      const id = 1;
       const req = {
+        params: id,
         body: {},
       };
       const res = {};
