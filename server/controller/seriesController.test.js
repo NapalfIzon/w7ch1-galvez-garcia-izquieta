@@ -1,4 +1,5 @@
 const Serie = require("../../database/models/serie");
+const User = require("../../database/models/user");
 const {
   getSeries,
   deletedSerie,
@@ -132,11 +133,19 @@ describe("Given a Serie Controller", () => {
       const res = {
         json: jest.fn(),
       };
-
+      const userId = {
+        _id: req.userId,
+        series: [],
+        save: jest.fn(),
+      };
+      const next = jest.fn();
       Serie.create = jest.fn().mockResolvedValue(newSerie);
+      User.findOne = jest.fn().mockResolvedValue(userId);
 
-      await addSerie(req, res);
+      await addSerie(req, res, next);
+
       expect(Serie.create).toHaveBeenCalled();
+      expect(User.findOne).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(newSerie);
     });
   });
