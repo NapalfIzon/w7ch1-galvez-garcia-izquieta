@@ -14,7 +14,7 @@ jest.mock("../../database/models/serie");
 
 describe("Given a Serie Controller", () => {
   describe("When it receives an object res", () => {
-    test.skip("Then it should summon the method json", async () => {
+    test("Then it should summon the method json", async () => {
       const series = [
         {
           id: 1,
@@ -43,7 +43,7 @@ describe("Given a Serie Controller", () => {
   });
 
   describe("When it receives a getSeries function", () => {
-    test.skip("Then it should summon the Serie.find", async () => {
+    test("Then it should summon the Serie.find", async () => {
       Serie.find = jest.fn().mockResolvedValue({});
 
       const res = {
@@ -373,6 +373,29 @@ describe("Given a Serie Controller", () => {
       await getPendingSeries(req, res);
 
       expect(res.json).toHaveBeenCalledWith({ view });
+    });
+  });
+
+  describe("When arrives a wrong body of addSeries function", () => {
+    test("Then it should return an error and a status 400", async () => {
+      const serie = "Whatever";
+      const req = {
+        body: {
+          serie,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 400,
+        message: "Datos erroneos!",
+      };
+      Serie.find = jest.fn().mockRejectedValue(error);
+
+      await addSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
 });
