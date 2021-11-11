@@ -163,4 +163,27 @@ describe("Given a Serie Controller", () => {
       expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
     });
   });
+
+  describe("When arrives a wrong format id and updateSerie function", () => {
+    test("Then it should return an error and a status 400", async () => {
+      const idSerie = "rfegbrbdfcx";
+      const req = {
+        body: {
+          idSerie,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 400,
+        message: "Formato erroneo",
+      };
+      Serie.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
+
+      await updateSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
 });
