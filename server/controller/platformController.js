@@ -14,6 +14,7 @@ const getPlatforms = async (req, res) => {
 
 const addPlatform = async (req, res, next) => {
   const newPlatform = req.body;
+
   try {
     await Platform.create(newPlatform);
     res.json(newPlatform);
@@ -26,8 +27,8 @@ const addPlatform = async (req, res, next) => {
         "Se ha intentado añadir una plataforma sin autorización ₍ᐢ.⚇.ᐢ₎"
       )
     );
-    error.code(401);
-    error.message("No hemos podido crear la plataforma solicitada ʅ(°,ʖ°)ʃ");
+    error.code = 401;
+    error.message = "No hemos podido crear la plataforma solicitada ʅ(°,ʖ°)ʃ";
     next(error);
   }
 };
@@ -47,7 +48,7 @@ const updatePlatform = async (req, res, next) => {
       );
     } else {
       const error = new Error("Plataforma no encontrada");
-      error.code(404);
+      error.code = 404;
       next(error);
     }
   } catch (error) {
@@ -56,20 +57,17 @@ const updatePlatform = async (req, res, next) => {
         "Se ha intentado modificar una plataforma sin autorización ₍ᐢ.⚇.ᐢ₎"
       )
     );
-    error.code(401);
-    error.message(
-      "No hemos podido modificar la plataforma solicitada ʅ(°,ʖ°)ʃ"
-    );
+    error.code = 401;
+    error.message =
+      "No hemos podido modificar la plataforma solicitada ʅ(°,ʖ°)ʃ";
     next(error);
   }
 };
 
 const removePlatform = async (req, res, next) => {
-  const temporalPlatform = req.body;
+  const { idPlatform } = req.params;
   try {
-    const deletedPlatform = await Platform.findByIdAndDelete(
-      temporalPlatform.id
-    );
+    const deletedPlatform = await Platform.findByIdAndDelete(idPlatform);
     if (deletedPlatform) {
       res.json(deletedPlatform);
       debug(
@@ -77,7 +75,7 @@ const removePlatform = async (req, res, next) => {
       );
     } else {
       const error = new Error("Plataforma no encontrada");
-      error.code(404);
+      error.code = 404;
       next(error);
     }
   } catch (error) {
@@ -86,8 +84,9 @@ const removePlatform = async (req, res, next) => {
         "Se ha intentado eliminar una plataforma sin autorización ₍ᐢ.⚇.ᐢ₎"
       )
     );
-    error.code(401);
-    error.message("No hemos podido eliminar la plataforma solicitada ʅ(°,ʖ°)ʃ");
+    error.code = 401;
+    error.message =
+      "No hemos podido eliminar la plataforma solicitada ʅ(°,ʖ°)ʃ";
     next(error);
   }
 };
