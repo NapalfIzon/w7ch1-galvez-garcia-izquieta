@@ -1,9 +1,11 @@
 const Serie = require("../../database/models/serie");
+const User = require("../../database/models/user");
 const {
   getSeries,
   deletedSerie,
   addSerie,
   updateSerie,
+  markViewedSerie,
 } = require("./seriesController");
 
 jest.mock("../../database/models/serie");
@@ -132,11 +134,19 @@ describe("Given a Serie Controller", () => {
       const res = {
         json: jest.fn(),
       };
-
+      const userId = {
+        _id: req.userId,
+        series: [],
+        save: jest.fn(),
+      };
+      const next = jest.fn();
       Serie.create = jest.fn().mockResolvedValue(newSerie);
+      User.findOne = jest.fn().mockResolvedValue(userId);
 
-      await addSerie(req, res);
+      await addSerie(req, res, next);
+
       expect(Serie.create).toHaveBeenCalled();
+      expect(User.findOne).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(newSerie);
     });
   });
@@ -204,6 +214,79 @@ describe("Given a Serie Controller", () => {
       await updateSerie(req, res);
 
       expect(res.json).toHaveBeenCalledWith(idSerie);
+    });
+  });
+
+  describe("When it receives a wrong id and markviewedSerie function", () => {
+    test("Then it should receives a error with a 404 code", async () => {
+      Serie.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+      const idSerie = 12;
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 404,
+        message: "Serie no encontrada",
+      };
+
+      await markViewedSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
+
+  describe("When it receives a wrong id  format and markviewedSerie function", () => {
+    test("Then it should receives a error with a 400 code", async () => {
+      const error = {
+        code: 400,
+        message: "Formato erroneo",
+      };
+
+      Serie.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
+      const idSerie = "eddfghf";
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const next = jest.fn();
+
+      await markViewedSerie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
+
+  describe("When arrives an id and markViewedSerie function", () => {
+    test("Then it should return the serie marked as viewed", async () => {
+      const idSerie = 10;
+      const req = {
+        params: {
+          idSerie,
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      const serie = {
+        id: "asdf",
+        view: true,
+      };
+      const next = jest.fn();
+      Serie.findByIdAndUpdate = jest
+        .fn()
+        .mockResolvedValue(serie.id, serie, { view: true });
+
+      await markViewedSerie(req, res, next);
+
+      expect(res.json).toHaveBeenCalledWith(serie.id);
     });
   });
 });
