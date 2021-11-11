@@ -158,4 +158,52 @@ describe("Given a loginUser function", () => {
       expect(next.mock.calls[0][0]).toHaveProperty("code", expectedError.code);
     });
   });
+
+  describe("When it receives non correct user login password", () => {
+    test("Then it should invoke next() function with a error", async () => {
+      const req = {
+        body: {
+          userName: "Usuario_Admin",
+          password: "admin",
+        },
+      };
+
+      const res = {
+        json: jest.fn(),
+      };
+
+      const user = {
+        userName: "Usuario_Admin",
+        password:
+          "$2b$10$.xShGXjq4bjeueI7/9/DquWq5AIJ0d.mBxYs/lmMnf9FFollI4pMC",
+        isAdmin: true,
+        series: [
+          "618c3b91ee2427e9c8460e76",
+          "618c3b95ee2427e9c8460e7a",
+          "618c3b97ee2427e9c8460e7e",
+          "618ccbb93af649fe80bebd3e",
+        ],
+        __v: 4,
+        id: "618c181075e76774517f1aa0",
+      };
+
+      const expectedError = {
+        message: "Wrong credentials",
+        code: 401,
+      };
+
+      const next = jest.fn();
+
+      User.findOne = jest.fn().mockResolvedValue(user);
+      bcrypt.compare = jest.fn().mockResolvedValue(false);
+
+      await loginUser(req, res, next);
+
+      expect(next.mock.calls[0][0]).toHaveProperty(
+        "message",
+        expectedError.message
+      );
+      expect(next.mock.calls[0][0]).toHaveProperty("code", expectedError.code);
+    });
+  });
 });
