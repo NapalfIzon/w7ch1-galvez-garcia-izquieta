@@ -6,13 +6,14 @@ const {
   addSerie,
   updateSerie,
   markViewedSerie,
+  getViewedSeries,
 } = require("./seriesController");
 
 jest.mock("../../database/models/serie");
 
 describe("Given a Serie Controller", () => {
   describe("When it receives an object res", () => {
-    test("Then it should summon the method json", async () => {
+    test.skip("Then it should summon the method json", async () => {
       const series = [
         {
           id: 1,
@@ -41,7 +42,7 @@ describe("Given a Serie Controller", () => {
   });
 
   describe("When it receives a getSeries function", () => {
-    test("Then it should summon the Serie.find", async () => {
+    test.skip("Then it should summon the Serie.find", async () => {
       Serie.find = jest.fn().mockResolvedValue({});
 
       const res = {
@@ -287,6 +288,48 @@ describe("Given a Serie Controller", () => {
       await markViewedSerie(req, res, next);
 
       expect(res.json).toHaveBeenCalledWith(serie.id);
+    });
+  });
+
+  describe("When arrives a wrong body of getViewedSeries function", () => {
+    test("Then it should return an error and a status 400", async () => {
+      const view = true;
+      const req = {
+        body: {
+          view,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 400,
+        message: "Datos erroneos!",
+      };
+      Serie.find = jest.fn().mockRejectedValue(error);
+
+      await getViewedSeries(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
+
+  describe("When arrives a correct body of getViewedSeries function", () => {
+    test("Then it should return the series list", async () => {
+      const view = true;
+      const req = {
+        body: {
+          view,
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      Serie.find = jest.fn().mockResolvedValue({ view });
+
+      await getViewedSeries(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({ view });
     });
   });
 });
