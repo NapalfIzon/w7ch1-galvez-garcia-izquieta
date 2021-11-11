@@ -6,11 +6,20 @@ const User = require("../../database/models/user");
 
 const getSeries = async (req, res, next) => {
   try {
-    const series = await Serie.find();
-    debug(chalk.blue("Haciendo un get a /series"));
-    res.json(series);
+    debug(chalk.green(`Soy el usuario ${req.userid}`));
+    const user = await User.findOne({ _id: req.userid }).populate({
+      path: "series",
+      select: "name season view",
+    });
+    debug(chalk.green("Estamos poblando->"));
+    debug(chalk.green(user));
+    debug(chalk.blue("Mis series son:"));
+    debug(chalk.blue(user.series));
+    res.json(user.series);
   } catch (error) {
     error.code = 400;
+    debug(chalk.green("Estamos mostrando el error->"));
+    debug(chalk.green(error));
     error.message = "Datos erroneos!";
     next(error);
   }

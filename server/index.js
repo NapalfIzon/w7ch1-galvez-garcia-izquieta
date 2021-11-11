@@ -53,7 +53,7 @@ app.use(express.json());
 
 app.use("/users", usersRoutes);
 
-app.use("/series", Auth, isAdmin, seriesRoutes);
+app.use("/series", Auth, seriesRoutes);
 
 /* app.use("/platforms", Auth, isAdmin, platformsRoutes); */
 

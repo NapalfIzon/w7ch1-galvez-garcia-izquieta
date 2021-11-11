@@ -13,8 +13,8 @@ const serieValidation = require("../schemas/serieSchema");
 
 const router = express.Router();
 
-router.get("/", validate(serieValidation), getSeries);
-router.get("/viewed", validate(serieValidation), getViewedSeries);
+router.get("/", getSeries);
+router.get("/viewed", getViewedSeries);
 router.get("/pending", validate(serieValidation), getPendingSeries);
 router.post("/", validate(serieValidation), addSerie);
 router.put("/:idSerie", validate(serieValidation), updateSerie);
