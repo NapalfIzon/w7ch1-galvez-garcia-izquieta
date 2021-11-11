@@ -5,17 +5,26 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../../database/models/user");
 
-const addUser = async (req, res) => {
+const addUser = async (req, res, next) => {
   const userBody = req.body;
-  const password = await bcrypt.hash(userBody.password, 10);
-  debug(chalk.blue("Creando usuario en el endpoint /users/register"));
-  const users = await User.create({
-    userName: userBody.userName,
-    password,
-    isAdmin: userBody.isAdmin,
-  });
-  debug(chalk.blue(`Hemos creado el usuario ${users}`));
-  res.json(users);
+  try {
+    const password = await bcrypt.hash(userBody.password, 10);
+    debug(chalk.blue("Creando usuario en el endpoint /users/register"));
+    const users = await User.create({
+      userName: userBody.userName,
+      password,
+      isAdmin: userBody.isAdmin,
+    });
+    debug(chalk.blue(`Hemos creado el usuario ${users}`));
+    res.json(users);
+  } catch {
+    const error = new Error("Datos erroneos!");
+    error.code = 400;
+    debug(
+      chalk.blue(`Hemos creado el error de usuario ${JSON.stringify(error)}`)
+    );
+    next(error);
+  }
 };
 
 const getusers = async (req, res, next) => {
@@ -37,10 +46,12 @@ const loginUser = async (req, res, next) => {
   debug(chalk.blue(userName));
   debug(chalk.blue(password));
   const user = await User.findOne({ userName });
+  debug(chalk.blue(`El usuario encontrado es ${JSON.stringify(user)}`));
   debug(chalk.blue(user));
   if (!user) {
     const error = new Error("Wrong credentials");
     error.code = 401;
+    debug(chalk.blue(`El usuario no existe ${JSON.stringify(error)}`));
     next(error);
   } else {
     const contraseñaOK = await bcrypt.compare(password, user.password);
