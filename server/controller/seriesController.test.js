@@ -7,6 +7,7 @@ const {
   updateSerie,
   markViewedSerie,
   getViewedSeries,
+  getPendingSeries,
 } = require("./seriesController");
 
 jest.mock("../../database/models/serie");
@@ -328,6 +329,48 @@ describe("Given a Serie Controller", () => {
       Serie.find = jest.fn().mockResolvedValue({ view });
 
       await getViewedSeries(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({ view });
+    });
+  });
+
+  describe("When arrives a wrong body of getPendingSeries function", () => {
+    test("Then it should return an error and a status 400", async () => {
+      const view = false;
+      const req = {
+        body: {
+          view,
+        },
+      };
+      const next = jest.fn();
+      const error = {
+        code: 400,
+        message: "Datos erroneos!",
+      };
+      Serie.find = jest.fn().mockRejectedValue(error);
+
+      await getPendingSeries(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty("message", error.message);
+      expect(next.mock.calls[0][0]).toHaveProperty("code", error.code);
+    });
+  });
+
+  describe("When arrives a correct body of getPendingSeries function", () => {
+    test("Then it should return the series list", async () => {
+      const view = false;
+      const req = {
+        body: {
+          view,
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      Serie.find = jest.fn().mockResolvedValue({ view });
+
+      await getPendingSeries(req, res);
 
       expect(res.json).toHaveBeenCalledWith({ view });
     });
