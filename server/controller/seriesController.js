@@ -59,7 +59,12 @@ const getPendingSeries = async (req, res, next) => {
 const addSerie = async (req, res, next) => {
   try {
     debug(chalk.green("Haciendo un post a /series"));
+    debug(chalk.green("Que tiene req.data"));
+    debug(chalk.green(JSON.stringify(req.file)));
     const serie = req.body;
+    serie.img = req.file.path;
+    debug(chalk.green("El path de la foto será:"));
+    debug(chalk.green(serie.img));
     debug(chalk.green(`La serie que llega es ${JSON.stringify(serie)}`));
     debug(chalk.green(`Soy el usuario ${req.userid}`));
     const newSerie = await Serie.create(serie);
@@ -78,11 +83,15 @@ const addSerie = async (req, res, next) => {
 
 const updateSerie = async (req, res, next) => {
   const serie = req.body;
+  const { idSerie } = req.params;
+  debug(chalk.green("Haciendo un put a /series/:idSerie"));
+  debug(chalk.green(JSON.stringify(req.body)));
   try {
-    const updatedSerie = await Serie.findByIdAndUpdate(serie.id, serie, {
+    const updatedSerie = await Serie.findByIdAndUpdate(idSerie, serie, {
       new: true,
     });
-    debug(chalk.blue("Haciendo un put a /series"));
+    debug(chalk.green("Actualizando la serie->"));
+    debug(chalk.green(updatedSerie));
     if (updatedSerie) {
       res.json(updatedSerie);
     } else {

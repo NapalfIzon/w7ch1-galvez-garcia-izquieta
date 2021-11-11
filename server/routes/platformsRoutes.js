@@ -11,7 +11,7 @@ const isAdmin = require("../middlewares/isAdmin");
 
 const router = express.Router();
 
-router.get("/", validate(platformValidation), getPlatforms);
+router.get("/", getPlatforms);
 
 router.post("/", validate(platformValidation), isAdmin, addPlatform);
 

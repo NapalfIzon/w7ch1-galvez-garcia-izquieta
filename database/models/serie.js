@@ -13,6 +13,10 @@ const serieSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  img: {
+    type: String,
+    required: true,
+  },
   platform: {
     type: [Types.ObjectId],
     ref: "Platform",
